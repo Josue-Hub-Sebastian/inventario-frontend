@@ -1,0 +1,484 @@
+<div class="container mt-5">
+
+  <div class="card shadow">
+
+    <!-- HEADER -->
+    <div class="card-header bg-dark text-white">
+
+      <h3 class="mb-0">
+        Sistema Inventario Banco
+      </h3>
+
+    </div>
+
+    <div class="card-body">
+
+      <!-- ACCIONES -->
+      <div class="row g-3 mb-4 align-items-end">
+
+        <!-- INPUT EXCEL -->
+        <div class="col-md-6">
+
+          <label class="form-label fw-bold">
+            Importar Excel
+          </label>
+
+          <input
+            type="file"
+            class="form-control"
+            accept=".xlsx"
+            (change)="seleccionarArchivo($event)">
+
+        </div>
+
+        <!-- BOTON IMPORTAR -->
+        <div class="col-md-3 d-grid">
+
+          <button
+            class="btn btn-success"
+            (click)="importarExcel()"
+            [disabled]="cargando">
+
+            {{ cargando
+                ? 'Importando...'
+                : 'Importar Excel' }}
+
+          </button>
+
+        </div>
+
+        <!-- BOTON NUEVO -->
+        <div class="col-md-3 d-grid">
+
+          <button
+            class="btn btn-primary"
+            (click)="abrirModalRegistrar()">
+
+            Nuevo Equipo
+
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- BARRA PROGRESO -->
+      <div
+        *ngIf="cargando"
+        class="mb-4">
+
+        <div class="progress">
+
+          <div
+            class="progress-bar
+                   progress-bar-striped
+                   progress-bar-animated"
+
+            role="progressbar"
+
+            [style.width.%]="progreso">
+
+            {{ progreso }}%
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- TABLA -->
+      <div class="table-responsive">
+
+        <table
+          class="table
+                 table-bordered
+                 table-hover
+                 table-striped
+                 align-middle">
+
+          <!-- HEAD -->
+          <thead class="table-dark">
+
+            <tr>
+
+              <th>ID</th>
+
+              <th>Código</th>
+
+              <th>Tipo</th>
+
+              <th>Marca</th>
+
+              <th>Modelo</th>
+
+              <th>Serie</th>
+
+              <th>Estado</th>
+
+              <th>Ubicación</th>
+
+              <th>Usuario</th>
+
+              <th width="160">
+                Acciones
+              </th>
+
+            </tr>
+
+          </thead>
+
+          <!-- BODY -->
+          <tbody>
+
+            <!-- SIN DATOS -->
+            <tr *ngIf="listaEquipos.length === 0">
+
+              <td
+                colspan="10"
+                class="text-center text-muted">
+
+                No existen registros
+
+              </td>
+
+            </tr>
+
+            <!-- DATOS -->
+            <tr *ngFor="let item of listaEquipos">
+
+              <td>
+                {{ item.id }}
+              </td>
+
+              <td>
+                {{ item.codigoPatrimonial }}
+              </td>
+
+              <td>
+                {{ item.tipoEquipo }}
+              </td>
+
+              <td>
+                {{ item.marca }}
+              </td>
+
+              <td>
+                {{ item.modelo }}
+              </td>
+
+              <td>
+                {{ item.numeroSerie }}
+              </td>
+
+              <!-- ESTADO -->
+              <td>
+
+                <span
+                  class="badge"
+
+                  [ngClass]="{
+
+                    'bg-success':
+                      item.estadoEquipo === 'Activo',
+
+                    'bg-warning text-dark':
+                      item.estadoEquipo === 'Mantenimiento',
+
+                    'bg-danger':
+                      item.estadoEquipo === 'Baja',
+
+                    'bg-info text-dark':
+                      item.estadoEquipo === 'Prestado'
+                  }">
+
+                  {{ item.estadoEquipo }}
+
+                </span>
+
+              </td>
+
+              <td>
+                {{ item.ubicacion }}
+              </td>
+
+              <td>
+                {{ item.usuarioAsignado }}
+              </td>
+
+              <!-- ACCIONES -->
+              <td>
+
+                <div class="d-flex gap-2">
+
+                  <!-- EDITAR -->
+                  <button
+                    class="btn btn-primary btn-sm"
+                    (click)="abrirModalEditar(item)">
+
+                    Editar
+
+                  </button>
+
+                  <!-- ELIMINAR -->
+                  <button
+                    class="btn btn-danger btn-sm"
+                    (click)="eliminar(item.id!)">
+
+                    Eliminar
+
+                  </button>
+
+                </div>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ===================================== -->
+<!-- MODAL -->
+<!-- ===================================== -->
+
+<div
+  class="modal fade"
+  id="modalEditar"
+  tabindex="-1"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-lg">
+
+    <div class="modal-content">
+
+      <!-- HEADER -->
+      <div class="modal-header bg-dark text-white">
+
+        <h5 class="modal-title">
+
+          {{
+            modoEdicion
+            ? 'Actualizar Equipo'
+            : 'Registrar Equipo'
+          }}
+
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal">
+        </button>
+
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body">
+
+        <div class="row g-3">
+
+          <!-- CODIGO -->
+          <div class="col-md-6">
+
+            <label class="form-label">
+
+              Código Patrimonial
+
+            </label>
+
+            <input
+              type="text"
+              class="form-control bg-light"
+              [(ngModel)]="equipoEditar.codigoPatrimonial"
+              disabled>
+
+            <small class="text-muted">
+
+              Código generado automáticamente
+              por el sistema
+
+            </small>
+
+          </div>
+
+          <!-- TIPO -->
+          <div class="col-md-6">
+
+            <label class="form-label">
+
+              Tipo Equipo
+
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="equipoEditar.tipoEquipo">
+
+          </div>
+
+          <!-- MARCA -->
+          <div class="col-md-6">
+
+            <label class="form-label">
+
+              Marca
+
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="equipoEditar.marca">
+
+          </div>
+
+          <!-- MODELO -->
+          <div class="col-md-6">
+
+            <label class="form-label">
+
+              Modelo
+
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="equipoEditar.modelo">
+
+          </div>
+
+          <!-- SERIE -->
+          <div class="col-md-6">
+
+            <label class="form-label">
+
+              Número Serie
+
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="equipoEditar.numeroSerie">
+
+          </div>
+
+          <!-- ESTADO -->
+          <div class="col-md-6">
+
+            <label class="form-label">
+
+              Estado
+
+            </label>
+
+            <select
+              class="form-select"
+              [(ngModel)]="equipoEditar.estadoEquipo">
+
+              <option value="Activo">
+                Activo
+              </option>
+
+              <option value="Mantenimiento">
+                Mantenimiento
+              </option>
+
+              <option value="Prestado">
+                Prestado
+              </option>
+
+              <option value="Baja">
+                Baja
+              </option>
+
+            </select>
+
+          </div>
+
+          <!-- UBICACION -->
+          <div class="col-md-6">
+
+            <label class="form-label">
+
+              Ubicación
+
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="equipoEditar.ubicacion">
+
+          </div>
+
+          <!-- USUARIO -->
+          <div class="col-md-6">
+
+            <label class="form-label">
+
+              Usuario Asignado
+
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="equipoEditar.usuarioAsignado">
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="modal-footer">
+
+        <!-- CANCELAR -->
+        <button
+          class="btn btn-secondary"
+          data-bs-dismiss="modal">
+
+          Cancelar
+
+        </button>
+
+        <!-- ACTUALIZAR -->
+        <button
+          *ngIf="modoEdicion"
+          class="btn btn-primary"
+          (click)="actualizarEquipo()">
+
+          Actualizar
+
+        </button>
+
+        <!-- REGISTRAR -->
+        <button
+          *ngIf="!modoEdicion"
+          class="btn btn-success"
+          (click)="registrarEquipo()">
+
+          Registrar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
