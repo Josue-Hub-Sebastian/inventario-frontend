@@ -9,6 +9,7 @@ import {Equipo} from '../models/equipo';
 })
 export class EquipoService {
     private api = 'https://localhost:7192/api/equipo';
+    //ando en duda si esconder el endpoint en un archivo de configuración o dejarlo aquí, ya que es un proyecto pequeño por ahora 
 
     constructor(private http:HttpClient) {}
 

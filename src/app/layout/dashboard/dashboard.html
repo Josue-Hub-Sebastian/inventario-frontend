@@ -1,0 +1,76 @@
+<div class="container-fluid">
+
+  <div class="row">
+
+    <!-- SIDEBAR -->
+    <div
+      class="col-md-2
+             bg-dark
+             text-white
+             vh-100 p-3">
+
+      <h4 class="mb-4">
+        Banco Inventario
+      </h4>
+
+      <div class="d-grid gap-2">
+
+        <a
+          routerLink="/dashboard"
+          class="btn btn-outline-light"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}">
+
+          Inicio
+
+        </a>
+
+        <a
+          routerLink="/dashboard/inventario"
+          class="btn btn-outline-light"
+          routerLinkActive="active">
+
+          Inventario
+
+        </a>
+
+        <a
+          routerLink="/dashboard/reportes"
+          class="btn btn-outline-light"
+          routerLinkActive="active">
+
+          Reportes
+
+        </a>
+
+        <a
+          routerLink="/dashboard/usuarios"
+          class="btn btn-outline-light"
+          routerLinkActive="active">
+
+          Usuarios
+
+        </a>
+
+        <button
+          class="btn btn-danger mt-4 w-100"
+          (click)="logout()">
+
+          Cerrar Sesión
+
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- CONTENIDO -->
+    <div class="col-md-10 p-4">
+
+      <router-outlet></router-outlet>
+
+    </div>
+
+  </div>
+
+</div>

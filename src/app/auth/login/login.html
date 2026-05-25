@@ -1,0 +1,50 @@
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+
+  <div class="card shadow p-4" style="width: 400px;">
+
+    <h2 class="text-center mb-4">
+      Banco Inventario
+    </h2>
+
+    <div class="mb-3">
+
+      <label>
+        Usuario
+      </label>
+
+      <input
+        type="text"
+        class="form-control"
+        [(ngModel)]="username">
+
+    </div>
+
+    <div class="mb-4">
+
+      <label>
+        Contraseña
+      </label>
+
+      <input
+        type="password"
+        class="form-control"
+        [(ngModel)]="password">
+
+    </div>
+
+    <button
+      class="btn btn-dark w-100"
+      (click)="iniciarSesion()"
+      [disabled]="cargando">
+
+      {{
+        cargando
+        ? 'Ingresando...'
+        : 'Ingresar'
+      }}
+
+    </button>
+
+  </div>
+
+</div>
