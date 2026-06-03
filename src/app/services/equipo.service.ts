@@ -65,4 +65,17 @@ export class EquipoService {
     equipo
   );
 }
+
+buscar(texto: string, estado: string, ubicacion: string): Observable<Equipo[]> {
+    return this.http.get<Equipo[]>(
+        `${this.api}/buscar`,
+        {
+            params: {
+                ...(texto && { texto }),
+                ...(estado && { estado }),
+                ...(ubicacion && { ubicacion })
+            }
+        }
+    );
+}
 }

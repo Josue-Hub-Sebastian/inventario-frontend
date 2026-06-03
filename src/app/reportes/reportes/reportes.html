@@ -1,1 +1,75 @@
-<p>reportes works!</p>
+<div class="p-2">
+
+  <h3 class="mb-4">Reportes</h3>
+
+  <!-- BOTONES DESCARGA -->
+  <div class="d-flex gap-2 mb-4">
+
+    <button class="btn btn-dark"
+      (click)="descargarPdf()"
+      [disabled]="descargandoPdf">
+      {{ descargandoPdf ? 'Generando...' : '📄 Descargar PDF' }}
+    </button>
+
+    <button class="btn btn-success"
+      (click)="descargarExcel()"
+      [disabled]="descargandoExcel">
+      {{ descargandoExcel ? 'Generando...' : '📊 Descargar Excel' }}
+    </button>
+
+  </div>
+
+  <!-- GRAFICAS -->
+  <div *ngIf="analisis" class="row g-4">
+
+    <!-- ESTADO -->
+    <div class="col-md-4">
+      <div class="card shadow border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <span>Por Estado</span>
+          <button class="btn btn-sm btn-outline-light"
+            (click)="descargarGrafica(chartEstado!, 'estado')">
+            ⬇ PNG
+          </button>
+        </div>
+        <div class="card-body">
+          <canvas #graficaEstado></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARCA -->
+    <div class="col-md-4">
+      <div class="card shadow border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <span>Por Marca</span>
+          <button class="btn btn-sm btn-outline-light"
+            (click)="descargarGrafica(chartMarca!, 'marca')">
+            ⬇ PNG
+          </button>
+        </div>
+        <div class="card-body">
+          <canvas #graficaMarca></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPO -->
+    <div class="col-md-4">
+      <div class="card shadow border-0">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <span>Por Tipo</span>
+          <button class="btn btn-sm btn-outline-light"
+            (click)="descargarGrafica(chartTipo!, 'tipo')">
+            ⬇ PNG
+          </button>
+        </div>
+        <div class="card-body">
+          <canvas #graficaTipo></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

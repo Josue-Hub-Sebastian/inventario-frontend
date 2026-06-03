@@ -1,85 +1,174 @@
-<h2>Dashboard General</h2>
+<h2 class="mb-4">Dashboard General</h2>
 
-<div class="row mt-4">
+<!-- CARGANDO -->
+<div *ngIf="cargando" class="text-center py-5">
+  <div class="spinner-border text-dark"></div>
+  <p class="mt-2 text-muted">Cargando datos...</p>
+</div>
+
+<!-- DATOS -->
+<div *ngIf="!cargando && analisis" class="row g-3">
 
   <div class="col-md-3">
-
-    <div class="card shadow">
-
+    <div class="card shadow border-0 h-100">
       <div class="card-body">
+        <p class="text-muted mb-1">Activos</p>
+        <h2 class="text-success fw-bold">{{ analisis.equiposActivos }}</h2>
+      </div>
+    </div>
+  </div>
 
-        <h5>
-          Total Equipos
-        </h5>
+  <div class="col-md-3">
+    <div class="card shadow border-0 h-100">
+      <div class="card-body">
+        <p class="text-muted mb-1">Mantenimiento</p>
+        <h2 class="text-warning fw-bold">{{ analisis.equiposMantenimiento }}</h2>
+      </div>
+    </div>
+  </div>
 
-        <h2>
-          150
+  <div class="col-md-3">
+    <div class="card shadow border-0 h-100">
+      <div class="card-body">
+        <p class="text-muted mb-1">Baja</p>
+        <h2 class="text-danger fw-bold">{{ analisis.equiposBaja }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow border-0 h-100">
+      <div class="card-body">
+        <p class="text-muted mb-1">Nivel de Riesgo</p>
+        <h2 class="fw-bold"
+          [ngClass]="{
+            'text-success': analisis.riesgo === 'BAJO',
+            'text-warning': analisis.riesgo === 'MEDIO',
+            'text-danger':  analisis.riesgo === 'ALTO'
+          }">
+          {{ analisis.riesgo }}
         </h2>
+      </div>
+    </div>
+  </div>
 
+  <div class="col-md-6 mt-2">
+    <div class="card shadow border-0">
+      <div class="card-body">
+        <p class="text-muted mb-1">Marca más usada</p>
+        <h4 class="fw-bold">{{ analisis.marcaMasUsada }}</h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6 mt-2">
+    <div class="card shadow border-0">
+      <div class="card-body">
+        <p class="text-muted mb-1">Tipo de equipo más común</p>
+        <h4 class="fw-bold">{{ analisis.tipoMasUsado }}</h4>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BUSCADOR -->
+<div class="card shadow border-0 mt-4">
+  <div class="card-header bg-dark text-white">
+    <h5 class="mb-0">Buscar Equipo</h5>
+  </div>
+  <div class="card-body">
+
+    <div class="row g-3">
+
+      <!-- TEXTO -->
+      <div class="col-md-4">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Código, usuario, marca, modelo..."
+          [(ngModel)]="textoBusqueda">
+      </div>
+
+      <!-- ESTADO -->
+      <div class="col-md-3">
+        <select class="form-select" [(ngModel)]="estadoFiltro">
+          <option value="">Todos los estados</option>
+          <option value="Activo">Activo</option>
+          <option value="Mantenimiento">Mantenimiento</option>
+          <option value="Prestado">Prestado</option>
+          <option value="Baja">Baja</option>
+        </select>
+      </div>
+
+      <!-- UBICACION -->
+      <div class="col-md-3">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Ubicación / Piso..."
+          [(ngModel)]="ubicacionFiltro">
+      </div>
+
+      <!-- BOTONES -->
+      <div class="col-md-2 d-flex gap-2">
+        <button class="btn btn-dark w-100" (click)="buscar()" [disabled]="buscando">
+          {{ buscando ? '...' : 'Buscar' }}
+        </button>
+        <button class="btn btn-outline-secondary" (click)="limpiar()">✕</button>
+      </div>
+
+    </div>
+
+    <!-- RESULTADOS -->
+    <div *ngIf="buscado" class="mt-3">
+
+      <p class="text-muted small">{{ resultados.length }} resultado(s) encontrado(s)</p>
+
+      <div *ngIf="resultados.length === 0" class="alert alert-warning">
+        No se encontraron equipos con esos filtros.
+      </div>
+
+      <div class="table-responsive" *ngIf="resultados.length > 0">
+        <table class="table table-bordered table-hover table-striped align-middle">
+          <thead class="table-dark">
+            <tr>
+              <th>Código</th>
+              <th>Tipo</th>
+              <th>Marca</th>
+              <th>Modelo</th>
+              <th>Estado</th>
+              <th>Ubicación</th>
+              <th>Usuario</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of resultados">
+              <td>{{ item.codigoPatrimonial }}</td>
+              <td>{{ item.tipoEquipo }}</td>
+              <td>{{ item.marca }}</td>
+              <td>{{ item.modelo }}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'bg-success': item.estadoEquipo === 'Activo',
+                  'bg-warning text-dark': item.estadoEquipo === 'Mantenimiento',
+                  'bg-danger': item.estadoEquipo === 'Baja',
+                  'bg-info text-dark': item.estadoEquipo === 'Prestado'
+                }">{{ item.estadoEquipo }}</span>
+              </td>
+              <td>{{ item.ubicacion }}</td>
+              <td>{{ item.usuarioAsignado }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
     </div>
 
   </div>
+</div>
 
-  <div class="col-md-3">
-
-    <div class="card shadow">
-
-      <div class="card-body">
-
-        <h5>
-          Activos
-        </h5>
-
-        <h2 class="text-success">
-          120
-        </h2>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="col-md-3">
-
-    <div class="card shadow">
-
-      <div class="card-body">
-
-        <h5>
-          Mantenimiento
-        </h5>
-
-        <h2 class="text-warning">
-          20
-        </h2>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="col-md-3">
-
-    <div class="card shadow">
-
-      <div class="card-body">
-
-        <h5>
-          Baja
-        </h5>
-
-        <h2 class="text-danger">
-          10
-        </h2>
-
-      </div>
-
-    </div>
-
-  </div>
-
+<!-- ERROR -->
+<div *ngIf="!cargando && !analisis" class="alert alert-danger mt-3">
+  No se pudo conectar con el servidor de análisis.
 </div>
